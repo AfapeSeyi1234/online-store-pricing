@@ -66,3 +66,42 @@ More examples are in [docs/sample-io.md](docs/sample-io.md).
 
 ![Test results](docs/test-results.png)
 
+
+## Week 2: Order domain model
+
+The package `com.store.domain` models an e-commerce order system and reuses the Week 1 pricing rules.
+
+| Type | Kind | Purpose |
+|------|------|---------|
+| Customer | class | Name, email, address, loyalty status |
+| Product | class | Name, price, stock (stock goes down when ordered) |
+| Order | class | Holds items, status, payment and delivery |
+| Payment | class | Amount, method and payment status |
+| Delivery | class | Delivery address and status |
+| Address | record | Immutable address with delivery zone |
+| OrderItem | record | Immutable order line (product, quantity, price at order time) |
+| OrderStatus, PaymentStatus, PaymentMethod, DeliveryStatus | enums | Fixed sets of values |
+
+### Relationships
+
+- A Customer places many Orders.
+- An Order contains many OrderItems, and each OrderItem refers to one Product.
+- An Order has at most one Payment and one Delivery.
+- Customer and Delivery both use an Address.
+
+### Order life cycle
+
+```
+NEW -> PAID -> SHIPPED -> DELIVERED
+ |       |
+ +-------+--> CANCELLED (not possible after shipping)
+```
+
+Diagram: [docs/class-diagram.md](docs/class-diagram.md)
+Design decisions: [docs/design-notes.md](docs/design-notes.md)
+
+Run the demo: open `DomainDemo.java` and click the green arrow beside `main`.
+Run the tests: right-click `src/test/java` > Run 'All Tests' (46 tests).
+
+![Week 2 test results](docs/test-results-week.png)
+
