@@ -1,4 +1,4 @@
-package com.store.domain;
+package com.store.model;
 
 public enum OrderStatus {
     NEW, PAID, SHIPPED, DELIVERED, CANCELLED;

@@ -1,4 +1,4 @@
-package com.store;
+package com.store.pricing;
 
 // Holds the answers of a calculation. Just data, no logic.
 public class OrderResult {

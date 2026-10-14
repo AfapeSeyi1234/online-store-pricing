@@ -1,7 +1,7 @@
-package com.store.domain;
+package com.store.model;
 
 import com.store.OrderCalculator;
-import com.store.OrderResult;
+import com.store.pricing.OrderResult;
 
 import java.util.ArrayList;
 import java.util.Collections;

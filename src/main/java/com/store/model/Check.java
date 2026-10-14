@@ -1,4 +1,4 @@
-package com.store.domain;
+package com.store.model;
 
 // Small helper so every class checks text the same way.
 final class Check {

@@ -1,4 +1,4 @@
-package com.store.domain;
+package com.store.model;
 
 // One line of an order. The price is copied from the product when the item is created,
 // so a later price change does not alter an existing order.

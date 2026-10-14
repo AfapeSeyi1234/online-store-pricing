@@ -1,5 +1,7 @@
 package com.store;
 
+import com.store.pricing.OrderResult;
+
 /**
  * Business logic only. No Scanner, no System.out here.
  *

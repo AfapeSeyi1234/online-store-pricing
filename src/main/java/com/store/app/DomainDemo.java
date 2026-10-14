@@ -1,6 +1,7 @@
-package com.store.domain;
+package com.store.app;
 
-import com.store.OrderResult;
+import com.store.pricing.OrderResult;
+import com.store.model.*;
 
 public class DomainDemo {
 

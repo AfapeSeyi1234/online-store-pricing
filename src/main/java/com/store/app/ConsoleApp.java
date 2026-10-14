@@ -1,4 +1,7 @@
-package com.store;
+package com.store.app;
+
+import com.store.OrderCalculator;
+import com.store.pricing.OrderResult;
 
 import java.util.Scanner;
 
