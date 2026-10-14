@@ -1,16 +1,17 @@
-package com.store;
+package com.store.pricing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.store.pricing.OrderResult;
 import org.junit.jupiter.api.Test;
 
-public class OrderCalculatorTest {
+public class PricingServiceTest {
+
+    private final PricingService pricing = PricingService.standard();
 
     // helper: an order with one item
     private OrderResult oneItem(double price, int quantity, String location, boolean member) {
-        return OrderCalculator.calculate(new double[]{price}, new int[]{quantity}, location, member);
+        return pricing.calculate(new double[]{price}, new int[]{quantity}, location, member);
     }
 
     // ---------- NORMAL CASES ----------
@@ -59,7 +60,7 @@ public class OrderCalculatorTest {
     void severalItemsAreAddedUp() {
         double[] prices = {15.00, 25.00};
         int[] quantities = {2, 1};
-        OrderResult r = OrderCalculator.calculate(prices, quantities, "local", false);
+        OrderResult r = pricing.calculate(prices, quantities, "local", false);
         assertEquals(55.00, r.subtotal, 0.01);
         assertEquals(2.75, r.discount, 0.01);
         assertEquals(61.17, r.total, 0.01);
@@ -114,7 +115,7 @@ public class OrderCalculatorTest {
     @Test
     void emptyOrderIsRejected() {
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
-                () -> OrderCalculator.calculate(new double[0], new int[0], "local", false));
+                () -> pricing.calculate(new double[0], new int[0], "local", false));
         assertEquals("Order must contain at least one item.", e.getMessage());
     }
 

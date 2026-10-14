@@ -1,12 +1,16 @@
 package com.store.app;
 
-import com.store.OrderCalculator;
+import com.store.exception.ValidationException;
 import com.store.pricing.OrderResult;
+import com.store.pricing.PricingService;
+import com.store.validation.Validator;
 
 import java.util.Scanner;
 
-// Only talks to the user. All calculations are done by OrderCalculator.
+// Only talks to the user. All calculations are done by PricingService.
 public class ConsoleApp {
+
+    private static final PricingService PRICING = PricingService.standard();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -15,19 +19,26 @@ public class ConsoleApp {
         int itemCount = readInt(scanner, "How many different items? (1-20): ", 1, 20);
         double[] prices = new double[itemCount];
         int[] quantities = new int[itemCount];
-
-        for (int i = 0; i < itemCount; i++) {
-            prices[i] = readPrice(scanner, "Item " + (i + 1) + " unit price: ");
-            quantities[i] = readInt(scanner, "Item " + (i + 1) + " quantity (1-100): ", 1, 100);
-        }
+        readItems(scanner, prices, quantities);
 
         String location = readLocation(scanner);
         boolean isMember = readYesNo(scanner, "Loyalty member? (y/n): ");
 
+        showResult(prices, quantities, location, isMember);
+    }
+
+    private static void readItems(Scanner scanner, double[] prices, int[] quantities) {
+        for (int i = 0; i < prices.length; i++) {
+            prices[i] = readPrice(scanner, "Item " + (i + 1) + " unit price: ");
+            quantities[i] = readInt(scanner, "Item " + (i + 1) + " quantity (1-100): ", 1, 100);
+        }
+    }
+
+    private static void showResult(double[] prices, int[] quantities, String location, boolean isMember) {
         try {
-            OrderResult result = OrderCalculator.calculate(prices, quantities, location, isMember);
+            OrderResult result = PRICING.calculate(prices, quantities, location, isMember);
             printReceipt(result, location);
-        } catch (IllegalArgumentException e) {
+        } catch (ValidationException e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
@@ -68,7 +79,7 @@ public class ConsoleApp {
             String text = scanner.nextLine().trim();
             try {
                 double price = Double.parseDouble(text);
-                if (price > 0 && price <= 100000) {
+                if (Validator.isValidPrice(price)) {
                     return price;
                 }
                 System.out.println("Price must be greater than 0 and at most 100000.");
@@ -82,7 +93,7 @@ public class ConsoleApp {
         while (true) {
             System.out.print("Delivery location (local / regional / international): ");
             String text = scanner.nextLine().trim();
-            if (OrderCalculator.isValidLocation(text)) {
+            if (Validator.isValidLocation(text)) {
                 return text.toLowerCase();
             }
             System.out.println("Please type local, regional or international.");
