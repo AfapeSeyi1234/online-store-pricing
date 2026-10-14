@@ -1,7 +1,9 @@
 package com.store.model;
 
-import com.store.OrderCalculator;
+import com.store.exception.InvalidStateException;
 import com.store.pricing.OrderResult;
+import com.store.pricing.PricingService;
+import com.store.validation.Validator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,17 +15,20 @@ public class Order {
 
     private final String id;
     private final Customer customer;
+    private final PricingService pricing;
     private final List<OrderItem> items = new ArrayList<>();
     private OrderStatus status = OrderStatus.NEW;
     private Payment payment;     // empty until pay() is called
     private Delivery delivery;   // empty until ship() is called
 
     public Order(String id, Customer customer) {
-        this.id = Check.text(id, "Order id");
-        if (customer == null) {
-            throw new IllegalArgumentException("Customer is required.");
-        }
-        this.customer = customer;
+        this(id, customer, PricingService.standard());
+    }
+
+    public Order(String id, Customer customer, PricingService pricing) {
+        this.id = Validator.requireText(id, "Order id");
+        this.customer = Validator.requireNotNull(customer, "Customer");
+        this.pricing = Validator.requireNotNull(pricing, "Pricing service");
     }
 
     public String getId() {
@@ -52,24 +57,15 @@ public class Order {
     }
 
     public void addItem(Product product, int quantity) {
-        if (status != OrderStatus.NEW) {
-            throw new IllegalStateException("Items can only be added to a new order.");
-        }
-        if (payment != null && payment.getStatus() == PaymentStatus.PENDING) {
-            throw new IllegalStateException("A payment is in progress. Items cannot be added now.");
-        }
-        if (items.size() >= MAX_ITEMS) {
-            throw new IllegalStateException("An order cannot have more than " + MAX_ITEMS + " items.");
-        }
+        checkCanAddItem();
         OrderItem item = OrderItem.of(product, quantity); // validates the product and quantity
         product.reduceStock(quantity);                    // validates the stock
         items.add(item);                                  // only reached if both checks passed
     }
 
-    // Uses the Week 1 pricing rules.
     public OrderResult calculatePricing() {
         if (items.isEmpty()) {
-            throw new IllegalStateException("Order has no items.");
+            throw new InvalidStateException("Order has no items.");
         }
         double[] prices = new double[items.size()];
         int[] quantities = new int[items.size()];
@@ -77,35 +73,23 @@ public class Order {
             prices[i] = items.get(i).unitPrice();
             quantities[i] = items.get(i).quantity();
         }
-        return OrderCalculator.calculate(prices, quantities,
+        return pricing.calculate(prices, quantities,
                 customer.getAddress().zone(), customer.isLoyaltyMember());
     }
 
     public void pay(PaymentMethod method) {
-        if (status != OrderStatus.NEW) {
-            throw new IllegalStateException("Only a new order can be paid.");
-        }
-        if (items.isEmpty()) {
-            throw new IllegalStateException("Cannot pay for an empty order.");
-        }
-        if (payment != null && payment.getStatus() == PaymentStatus.PENDING) {
-            throw new IllegalStateException("A payment is already in progress.");
-        }
+        checkCanPay();
         payment = new Payment(calculatePricing().total, method);
     }
 
     public void confirmPayment() {
-        if (payment == null || payment.getStatus() != PaymentStatus.PENDING) {
-            throw new IllegalStateException("There is no pending payment to confirm.");
-        }
+        requirePendingPayment();
         payment.markSuccessful();
         moveTo(OrderStatus.PAID);
     }
 
     public void failPayment() {
-        if (payment == null || payment.getStatus() != PaymentStatus.PENDING) {
-            throw new IllegalStateException("There is no pending payment to fail.");
-        }
+        requirePendingPayment();
         payment.markFailed(); // the order stays NEW, so the customer can try again
     }
 
@@ -122,22 +106,67 @@ public class Order {
 
     public void cancel() {
         moveTo(OrderStatus.CANCELLED);
-        for (OrderItem item : items) {
-            item.product().addStock(item.quantity()); // give the stock back
+        returnStock();
+        settlePaymentAfterCancel();
+    }
+
+    // ---------- small private helpers ----------
+
+    private void checkCanAddItem() {
+        if (status != OrderStatus.NEW) {
+            throw new InvalidStateException("Items can only be added to a new order.");
         }
-        if (payment != null) {
-            if (payment.getStatus() == PaymentStatus.PENDING) {
-                payment.markFailed();
-            } else if (payment.getStatus() == PaymentStatus.SUCCESSFUL) {
-                payment.refund();
-            }
+        if (hasPendingPayment()) {
+            throw new InvalidStateException("A payment is in progress. Items cannot be added now.");
+        }
+        if (items.size() >= MAX_ITEMS) {
+            throw new InvalidStateException("An order cannot have more than " + MAX_ITEMS + " items.");
+        }
+    }
+
+    private void checkCanPay() {
+        if (status != OrderStatus.NEW) {
+            throw new InvalidStateException("Only a new order can be paid.");
+        }
+        if (items.isEmpty()) {
+            throw new InvalidStateException("Cannot pay for an empty order.");
+        }
+        if (hasPendingPayment()) {
+            throw new InvalidStateException("A payment is already in progress.");
+        }
+    }
+
+    private boolean hasPendingPayment() {
+        return payment != null && payment.getStatus() == PaymentStatus.PENDING;
+    }
+
+    private void requirePendingPayment() {
+        if (!hasPendingPayment()) {
+            throw new InvalidStateException("There is no pending payment.");
+        }
+    }
+
+    private void returnStock() {
+        for (OrderItem item : items) {
+            item.product().addStock(item.quantity());
+        }
+    }
+
+    private void settlePaymentAfterCancel() {
+        if (payment == null) {
+            return;
+        }
+        if (payment.getStatus() == PaymentStatus.PENDING) {
+            payment.markFailed();
+        } else if (payment.getStatus() == PaymentStatus.SUCCESSFUL) {
+            payment.refund();
         }
     }
 
     // The only place the status changes, so every change goes through the rules.
     private void moveTo(OrderStatus next) {
         if (!status.canMoveTo(next)) {
-            throw new IllegalStateException("Cannot change order from " + status + " to " + next + ".");
+            throw new InvalidStateException("Cannot change order from " + status + " to " + next + ".");
         }
         status = next;
     }

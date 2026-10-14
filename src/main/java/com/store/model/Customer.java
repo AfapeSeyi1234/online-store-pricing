@@ -1,5 +1,7 @@
 package com.store.model;
 
+import com.store.validation.Validator;
+
 public class Customer {
 
     private final String id;
@@ -9,13 +11,10 @@ public class Customer {
     private boolean loyaltyMember;
 
     public Customer(String id, String name, String email, Address address) {
-        this.id = Check.text(id, "Customer id");
-        this.name = Check.text(name, "Customer name");
-        this.email = checkEmail(email);
-        if (address == null) {
-            throw new IllegalArgumentException("Address is required.");
-        }
-        this.address = address;
+        this.id = Validator.requireText(id, "Customer id");
+        this.name = Validator.requireText(name, "Customer name");
+        this.email = Validator.requireEmail(email);
+        this.address = Validator.requireNotNull(address, "Address");
         this.loyaltyMember = false;
     }
 
@@ -40,21 +39,10 @@ public class Customer {
     }
 
     public void changeAddress(Address newAddress) {
-        if (newAddress == null) {
-            throw new IllegalArgumentException("Address is required.");
-        }
-        this.address = newAddress;
+        this.address = Validator.requireNotNull(newAddress, "Address");
     }
 
     public void makeLoyaltyMember() {
         this.loyaltyMember = true;
-    }
-
-    private static String checkEmail(String email) {
-        String text = Check.text(email, "Email");
-        if (!text.contains("@") || !text.contains(".")) {
-            throw new IllegalArgumentException("Email is not valid.");
-        }
-        return text;
     }
 }

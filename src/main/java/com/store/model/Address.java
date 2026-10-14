@@ -1,17 +1,17 @@
 package com.store.model;
 
-import com.store.OrderCalculator;
+import com.store.exception.ValidationException;
+import com.store.validation.Validator;
 
-// A record is immutable: once created, an Address never changes.
-// The checks in the "compact constructor" run every time one is created.
+// Immutable. The checks run every time an Address is created.
 public record Address(String street, String city, String country, String zone) {
 
     public Address {
-        street = Check.text(street, "Street");
-        city = Check.text(city, "City");
-        country = Check.text(country, "Country");
-        if (!OrderCalculator.isValidLocation(zone)) {
-            throw new IllegalArgumentException("Zone must be local, regional or international.");
+        street = Validator.requireText(street, "Street");
+        city = Validator.requireText(city, "City");
+        country = Validator.requireText(country, "Country");
+        if (!Validator.isValidLocation(zone)) {
+            throw new ValidationException("Zone must be local, regional or international.");
         }
         zone = zone.toLowerCase();
     }

@@ -1,15 +1,15 @@
 package com.store.model;
 
+import com.store.exception.InvalidStateException;
+import com.store.validation.Validator;
+
 public class Delivery {
 
     private final Address address;
     private DeliveryStatus status;
 
     public Delivery(Address address) {
-        if (address == null) {
-            throw new IllegalArgumentException("Delivery address is required.");
-        }
-        this.address = address;
+        this.address = Validator.requireNotNull(address, "Delivery address");
         this.status = DeliveryStatus.PREPARING;
     }
 
@@ -22,16 +22,19 @@ public class Delivery {
     }
 
     public void markInTransit() {
-        if (status != DeliveryStatus.PREPARING) {
-            throw new IllegalStateException("Only a delivery being prepared can go in transit.");
-        }
-        status = DeliveryStatus.IN_TRANSIT;
+        changeStatus(DeliveryStatus.PREPARING, DeliveryStatus.IN_TRANSIT,
+                "Only a delivery being prepared can go in transit.");
     }
 
     public void markDelivered() {
-        if (status != DeliveryStatus.IN_TRANSIT) {
-            throw new IllegalStateException("Only a delivery in transit can be delivered.");
+        changeStatus(DeliveryStatus.IN_TRANSIT, DeliveryStatus.DELIVERED,
+                "Only a delivery in transit can be delivered.");
+    }
+
+    private void changeStatus(DeliveryStatus required, DeliveryStatus next, String errorMessage) {
+        if (status != required) {
+            throw new InvalidStateException(errorMessage);
         }
-        status = DeliveryStatus.DELIVERED;
+        status = next;
     }
 }

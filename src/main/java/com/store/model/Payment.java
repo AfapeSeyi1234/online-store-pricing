@@ -1,5 +1,9 @@
 package com.store.model;
 
+import com.store.exception.InvalidStateException;
+import com.store.exception.ValidationException;
+import com.store.validation.Validator;
+
 public class Payment {
 
     private final double amount;
@@ -8,13 +12,10 @@ public class Payment {
 
     public Payment(double amount, PaymentMethod method) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("Payment amount must be greater than 0.");
-        }
-        if (method == null) {
-            throw new IllegalArgumentException("Payment method is required.");
+            throw new ValidationException("Payment amount must be greater than 0.");
         }
         this.amount = amount;
-        this.method = method;
+        this.method = Validator.requireNotNull(method, "Payment method");
         this.status = PaymentStatus.PENDING;
     }
 
@@ -31,23 +32,25 @@ public class Payment {
     }
 
     public void markSuccessful() {
-        if (status != PaymentStatus.PENDING) {
-            throw new IllegalStateException("Only a pending payment can be marked successful.");
-        }
-        status = PaymentStatus.SUCCESSFUL;
+        changeStatus(PaymentStatus.PENDING, PaymentStatus.SUCCESSFUL,
+                "Only a pending payment can be marked successful.");
     }
 
     public void markFailed() {
-        if (status != PaymentStatus.PENDING) {
-            throw new IllegalStateException("Only a pending payment can be marked failed.");
-        }
-        status = PaymentStatus.FAILED;
+        changeStatus(PaymentStatus.PENDING, PaymentStatus.FAILED,
+                "Only a pending payment can be marked failed.");
     }
 
     public void refund() {
-        if (status != PaymentStatus.SUCCESSFUL) {
-            throw new IllegalStateException("Only a successful payment can be refunded.");
+        changeStatus(PaymentStatus.SUCCESSFUL, PaymentStatus.REFUNDED,
+                "Only a successful payment can be refunded.");
+    }
+
+    // One place for the "is this change allowed?" check.
+    private void changeStatus(PaymentStatus required, PaymentStatus next, String errorMessage) {
+        if (status != required) {
+            throw new InvalidStateException(errorMessage);
         }
-        status = PaymentStatus.REFUNDED;
+        status = next;
     }
 }
