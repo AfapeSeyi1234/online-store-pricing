@@ -29,7 +29,6 @@ Reviewer: ____________   Date: ________   Pull request: ____________
 - [ ] Error messages are clear
 
 ## Reviewer comments and fixes
-| # | Reviewer comment | My fix | Commit |
-|---|------------------|--------|--------|
-| 1 |                  |        |        |
-| 2 |                  |        |        |
+| # | Reviewer comment                                                                                                                                                                                     | My fix | Commit |
+|---|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|----|
+| 1 | BulkDiscountPolicy.java, line 10 return 3; is a magic number. Could it be a named constant like BULK_PERCENT, the same way BULK_UNITS is named above it? That makes the rule easier to change later. | BulkDiscountPolicy.java: replace the magic number with a constant       | 70c87bc  |
