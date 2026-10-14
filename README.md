@@ -105,3 +105,40 @@ Run the tests: right-click `src/test/java` > Run 'All Tests' (46 tests).
 
 ![Week 2 test results](docs/test-results-week.png)
 
+## Week 3: Refactoring for maintainability
+
+The project was reorganised from two packages into layered packages.
+Behaviour did not change: all Week 1 and Week 2 tests still pass.
+
+Package diagram (before and after): [docs/package-diagram.md](docs/package-diagram.md)
+Code review checklist: [docs/code-review-checklist.md](docs/code-review-checklist.md)
+
+| Package | Responsibility |
+|---------|----------------|
+| `model` | Entities, records and enums |
+| `pricing` | Discount and shipping rules, and the service that combines them |
+| `validation` | Shared validation rules |
+| `exception` | Clear exception types |
+| `util` | Small helpers |
+| `repository` | Storing and finding products and orders |
+| `service` | Coordinating the steps of an order |
+| `app` | Console programs |
+
+### Major refactoring decisions
+
+1. **`DiscountPolicy` interface**: Week 1 had three discount rules in one method. Each is now its own class, so a new rule means a new class and no change to `PricingService`.
+2. **`ShippingCalculator` interface**: delivery pricing can be swapped (zone-based or flat rate).
+3. **Composition**: `PricingService` is built from a list of policies and a shipping calculator. It does not inherit from anything.
+4. **Repository interfaces**: storage is hidden behind `ProductRepository` and `OrderRepository`, so a database can replace the in-memory versions later.
+5. **`Validator`**: price, quantity, text, email and location rules were repeated in several classes. They now live in one place.
+6. **Small methods**: `Order` and `OrderInputValidator` had long methods; they are now split into short, named ones.
+7. **Duplicate logic removed**: `Payment` and `Delivery` share one `changeStatus` helper each.
+8. **Custom exceptions** extend the standard ones, so old tests and code still work.
+9. **Interfaces avoided where not needed**: `Order`, `Product` and the other model classes have only one version each, so they stay plain classes.
+
+### Pull request
+https://github.com/AfapeSeyi1234/online-store-pricing/pull/ (add the number)
+
+Run the tests: right-click `src/test/java` > Run 'All Tests' (64 tests).
+
+![Week 3 test results](docs/test-results-week3.png)
