@@ -21,10 +21,13 @@ public class Order {
     private Payment payment;     // empty until pay() is called
     private Delivery delivery;   // empty until ship() is called
 
+    // Convenient default: uses the standard store pricing rules.
     public Order(String id, Customer customer) {
         this(id, customer, PricingService.standard());
     }
 
+    // Used when a different pricing setup is needed (for example in tests or promotions).
+    // Keeping both means simple code stays simple, while Order is not locked to one pricing setup.
     public Order(String id, Customer customer, PricingService pricing) {
         this.id = Validator.requireText(id, "Order id");
         this.customer = Validator.requireNotNull(customer, "Customer");
