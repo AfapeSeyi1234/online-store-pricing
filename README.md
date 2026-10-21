@@ -142,3 +142,41 @@ https://github.com/AfapeSeyi1234/online-store-pricing/pull/ (add the number)
 Run the tests: right-click `src/test/java` > Run 'All Tests' (64 tests).
 
 ![Week 3 test results](docs/test-results-week3.png)
+
+
+## Week 4: Order and sales analyser
+
+A console program that processes products, customers and orders with Java collections, generics and streams.
+
+### Setup and usage
+1. Open the project in IntelliJ as a Maven project.
+2. Open `src/main/java/com/store/app/ReportApp.java` and click the green arrow beside `main`.
+3. Choose an option from the menu (1 to 10, 0 to exit).
+4. Run the tests: right-click `src/test/java` > Run 'All Tests' (add your real test count here).
+
+| Menu option | What it does |
+|-------------|--------------|
+| 1, 2 | Search products or orders |
+| 3 | Sort products by name, price or stock |
+| 4, 5, 6, 7 | Filter orders by status, customer, date range or value range |
+| 8 | Group orders by customer or status |
+| 9 | Check product data for duplicates and invalid records |
+| 10 | Sales summary: total sales, average order value, best sellers |
+
+### Package structure (new in Week 4)
+- `analytics`: `ProductAnalyser`, `OrderAnalyser`, `SalesReport`, `ProductCsvLoader`, `LoadResult`, `SampleData`
+- `util`: `CollectionUtil` (reusable generic methods)
+- `app`: `ReportApp` (menu)
+
+### Design decisions
+- **List, Set and Map** were each chosen for a reason: see [docs/collection-selection-note.md](docs/collection-selection-note.md).
+- **Generic methods** in `CollectionUtil` are written once and reused for products, orders and strings.
+- **Streams** are used for search, totals, averages, counting and best sellers.
+- **A sale** is an order that is PAID, SHIPPED or DELIVERED. NEW and CANCELLED orders are not counted.
+- **Bad records** are skipped and reported with a line number, so one bad line does not stop the rest.
+- **Order** received a date (`createdOn`) and a `getTotal()` method so it can be filtered and summed.
+
+Sample data: [docs/sample-data.md](docs/sample-data.md)
+Sample output: [docs/sample-output.md](docs/sample-output.md)
+
+![Week 4 test results](docs/test-results-week4.png)
