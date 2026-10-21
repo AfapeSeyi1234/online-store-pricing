@@ -1,6 +1,6 @@
 package com.store.model;
 
-import com.store.exception.InvalidStateException;
+import com.store.exception.InvalidOrderStateException;
 import com.store.pricing.OrderResult;
 import com.store.pricing.PricingService;
 import com.store.validation.Validator;
@@ -88,7 +88,7 @@ public class Order {
 
     public OrderResult calculatePricing() {
         if (items.isEmpty()) {
-            throw new InvalidStateException("Order has no items.");
+            throw new InvalidOrderStateException("Order has no items.");
         }
         double[] prices = new double[items.size()];
         int[] quantities = new int[items.size()];
@@ -137,25 +137,25 @@ public class Order {
 
     private void checkCanAddItem() {
         if (status != OrderStatus.NEW) {
-            throw new InvalidStateException("Items can only be added to a new order.");
+            throw new InvalidOrderStateException("Items can only be added to a new order.");
         }
         if (hasPendingPayment()) {
-            throw new InvalidStateException("A payment is in progress. Items cannot be added now.");
+            throw new InvalidOrderStateException("A payment is in progress. Items cannot be added now.");
         }
         if (items.size() >= MAX_ITEMS) {
-            throw new InvalidStateException("An order cannot have more than " + MAX_ITEMS + " items.");
+            throw new InvalidOrderStateException("An order cannot have more than " + MAX_ITEMS + " items.");
         }
     }
 
     private void checkCanPay() {
         if (status != OrderStatus.NEW) {
-            throw new InvalidStateException("Only a new order can be paid.");
+            throw new InvalidOrderStateException("Only a new order can be paid.");
         }
         if (items.isEmpty()) {
-            throw new InvalidStateException("Cannot pay for an empty order.");
+            throw new InvalidOrderStateException("Cannot pay for an empty order.");
         }
         if (hasPendingPayment()) {
-            throw new InvalidStateException("A payment is already in progress.");
+            throw new InvalidOrderStateException("A payment is already in progress.");
         }
     }
 
@@ -165,7 +165,7 @@ public class Order {
 
     private void requirePendingPayment() {
         if (!hasPendingPayment()) {
-            throw new InvalidStateException("There is no pending payment.");
+            throw new InvalidOrderStateException("There is no pending payment.");
         }
     }
 
@@ -189,7 +189,7 @@ public class Order {
     // The only place the status changes, so every change goes through the rules.
     private void moveTo(OrderStatus next) {
         if (!status.canMoveTo(next)) {
-            throw new InvalidStateException("Cannot change order from " + status + " to " + next + ".");
+            throw new InvalidOrderStateException("Cannot change order from " + status + " to " + next + ".");
         }
         status = next;
     }
