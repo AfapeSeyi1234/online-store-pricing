@@ -5,6 +5,7 @@ import com.store.pricing.OrderResult;
 import com.store.pricing.PricingService;
 import com.store.validation.Validator;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +17,7 @@ public class Order {
     private final String id;
     private final Customer customer;
     private final PricingService pricing;
+    private final LocalDate createdOn;
     private final List<OrderItem> items = new ArrayList<>();
     private OrderStatus status = OrderStatus.NEW;
     private Payment payment;     // empty until pay() is called
@@ -29,9 +31,15 @@ public class Order {
     // Used when a different pricing setup is needed (for example in tests or promotions).
     // Keeping both means simple code stays simple, while Order is not locked to one pricing setup.
     public Order(String id, Customer customer, PricingService pricing) {
+        this(id, customer, pricing, LocalDate.now());
+    }
+
+    // Used when the order date must be set, for example for sample data and reports.
+    public Order(String id, Customer customer, PricingService pricing, LocalDate createdOn) {
         this.id = Validator.requireText(id, "Order id");
         this.customer = Validator.requireNotNull(customer, "Customer");
         this.pricing = Validator.requireNotNull(pricing, "Pricing service");
+        this.createdOn = Validator.requireNotNull(createdOn, "Order date");
     }
 
     public String getId() {
@@ -46,6 +54,10 @@ public class Order {
         return status;
     }
 
+    public LocalDate getCreatedOn() {
+        return createdOn;
+    }
+
     public Payment getPayment() {
         return payment;
     }
@@ -57,6 +69,14 @@ public class Order {
     // Outsiders get a read-only view, so they cannot change the list directly.
     public List<OrderItem> getItems() {
         return Collections.unmodifiableList(items);
+    }
+
+    // The final amount to pay, or 0 if the order has no items yet.
+    public double getTotal() {
+        if (items.isEmpty()) {
+            return 0;
+        }
+        return calculatePricing().total;
     }
 
     public void addItem(Product product, int quantity) {
