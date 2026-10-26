@@ -171,7 +171,7 @@ public class Order {
 
     private void returnStock() {
         for (OrderItem item : items) {
-            item.product().addStock(item.quantity());
+            item.product().addStock(1);
         }
     }
 
