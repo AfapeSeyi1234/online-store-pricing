@@ -180,3 +180,39 @@ Sample data: [docs/sample-data.md](docs/sample-data.md)
 Sample output: [docs/sample-output.md](docs/sample-output.md)
 
 ![Week 4 test results](docs/test-results-week4.png)
+
+
+## Week 5: Reliability, logging and defect investigation
+
+### How the program fails
+| Situation | Exception | Checked? | Log level | What happens |
+|-----------|-----------|----------|-----------|--------------|
+| Order id already used | `DuplicateOrderException` | unchecked | WARN | Nothing is created |
+| Order not found | `OrderNotFoundException` | unchecked | WARN | Caller is told which id |
+| Product not found | `ProductNotFoundException` | unchecked | WARN | Order is unchanged |
+| Not enough stock, bad quantity | `ValidationException` | unchecked | WARN | Stock and order unchanged |
+| Pay an empty or paid order, cancel twice | `InvalidOrderStateException` | unchecked | WARN | Status is unchanged |
+| Payment declined | `PaymentFailedException` | unchecked | WARN | Order stays NEW, payment FAILED, can retry |
+| File missing, cannot read or write | `DataFileException` | **checked** | WARN / ERROR | Caller must handle it |
+| Bad line in a product file | none (reported in `LoadResult`) | n/a | WARN | Line skipped, rest loaded |
+| Unexpected error in checkout | `RuntimeException` | unchecked | ERROR | Logged and re-thrown |
+
+**Why checked for files only:** a file can fail for reasons the caller cannot prevent (disk, permissions), so Java forces the caller to handle it.
+Business mistakes are unchecked because the caller can avoid them by checking first.
+
+### Logging decisions
+- Built-in `java.util.logging`; set up in `LogSetup`, formatted by `LogFormatter` (DEBUG, INFO, WARN, ERROR).
+- **DEBUG** step details, **INFO** normal events, **WARN** expected failures, **ERROR** unexpected failures.
+- Logs go to the console and `logs/store.log` (not committed).
+- **Never logged:** emails, names, addresses, payment method, card details, passwords, file paths. Only order ids, customer ids and amounts.
+- Exceptions are logged by class name only, because their messages can contain paths or personal data.
+- A test (`checkoutLogsDoNotContainPersonalData`) checks this rule.
+
+### Evidence
+- Defect report: [docs/defect-report.md](docs/defect-report.md)
+- Sample log output: [docs/sample-log-output.md](docs/sample-log-output.md)
+- Tests (add your real count): ![Tests](docs/test-results-week5.png)
+- Coverage: ![Coverage](docs/coverage-report.png)
+- Debugger: ![Debugger](docs/debugger-breakpoint.png)
+
+Run the failure demo: open `ReliabilityDemo.java` and click the green arrow beside `main`.
