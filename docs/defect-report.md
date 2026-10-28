@@ -15,10 +15,8 @@ expected: <10> but was: <7>
 ## Stack trace
 ```
 org.opentest4j.AssertionFailedError: expected: <10> but was: <7>
-	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
-	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:...)
-	at com.store.model.OrderLifecycleTest.cancellingANewOrderGivesStockBack(OrderLifecycleTest.java:<<LINE NUMBER>>)
-	(remaining JUnit framework lines removed)
+    (JUnit framework lines removed)
+    at com.store.model.OrderLifecycleTest.cancellingANewOrderGivesStockBack(OrderLifecycleTest.java:115)
 ```
 
 The trace ends in the test, at the `assertEquals` line. That shows where the problem was **noticed**, not where it was **caused**.
@@ -41,7 +39,7 @@ Evidence: ![Debugger paused in returnStock](debugger-breakpoint.png)
 
 ## Correction
 I changed `addStock(1)` to `addStock(item.quantity())` in `Order.returnStock()`.
-Fix commit: <<COMMIT CODE>> ("Fix cancel returning only one unit of stock").
+Fix commit: b4aa1a0 ("Fix cancel returning only one unit of stock").
 After the fix, `cancellingANewOrderGivesStockBack` passed again, and all the other tests still passed.
 
 ## Regression test
