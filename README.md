@@ -216,3 +216,70 @@ Business mistakes are unchecked because the caller can avoid them by checking fi
 - Debugger: ![Debugger](docs/debugger-breakpoint.png)
 
 Run the failure demo: open `ReliabilityDemo.java` and click the green arrow beside `main`.
+
+## Week 6: Configurable order importer and JSON report
+
+Imports order records from a CSV file, validates them, and writes a JSON report plus a list of rejected records.
+
+### Setup
+1. Open the project in IntelliJ as a Maven project (Jackson is downloaded by Maven).
+2. Copy `config/importer.properties.example` to `config/importer.properties` and check the values.
+3. Run `src/main/java/com/store/app/ImportApp.java` (green arrow beside `main`).
+4. Run the tests: right-click `src/test/java` > Run 'All Tests' (NN tests).
+
+### Configuration
+Nothing is hardcoded. Settings come from **environment variables** or **`config/importer.properties`**.
+An environment variable overrides the file.
+
+| Setting | Environment variable | File key | Example |
+|---------|----------------------|----------|---------|
+| Input CSV | `ORDER_IMPORT_INPUT` | `input.file` | `data/sample-orders.csv` |
+| Output folder | `ORDER_IMPORT_OUTPUT_DIR` | `output.dir` | `output` |
+| Config file location (optional) | `ORDER_IMPORT_CONFIG` | n/a | `config/importer.properties` |
+
+Use forward slashes in paths, even on Windows.
+If a setting is missing, the program stops with a clear message naming the missing setting.
+`config/importer.properties` is not committed (it is in `.gitignore`); the template `config/importer.properties.example` is.
+
+**Why not hardcode?** A path that works on my computer fails on another one. Passwords and keys in source code end up in Git history.
+Environment-specific values belong outside the code, so the same program runs unchanged in development and in production.
+
+### CSV format
+`orderId,customerId,productId,quantity,unitPrice,orderDate,createdAt,status`
+
+| Column | Rule |
+|--------|------|
+| orderId, customerId, productId | required, no commas |
+| quantity | whole number 1 to 100 |
+| unitPrice | number greater than 0 and at most 100000 |
+| orderDate | `yyyy-MM-dd`, a real date, not in the future |
+| createdAt | `yyyy-MM-ddTHH:mm:ss`, on the same day as orderDate |
+| status | NEW, PAID, SHIPPED, DELIVERED or CANCELLED (any letter case) |
+
+A record is rejected if it breaks any rule, if it has the wrong number of columns, or if its `orderId` was already accepted earlier in the file.
+All reasons for a record are listed, and the rest of the file is still processed.
+
+### Output
+- `output/orders-report.json`: processing timestamp, summary (records read, accepted, rejected, total, average, total per status), processed records, rejected records with reasons.
+- `output/rejected-records.txt`: the same rejections in readable form.
+
+Sample input: `data/sample-orders.csv` (29 records: 21 valid, 8 invalid).
+Expected result: 21 accepted, 8 rejected, total 2141.29.
+
+### Failure behaviour
+| Situation | What happens |
+|-----------|--------------|
+| Setting missing | `ConfigurationException` with a message naming the missing variable or key |
+| Input file missing, or a folder | `DataFileException` (checked): "Input file not found: name" |
+| Output folder cannot be created | `DataFileException` |
+| Empty input file | Reports are written with zero totals, and a WARN is logged |
+| Bad record | Rejected with reasons, the import continues |
+
+### Design decisions
+- `Clock` and today's date are passed in, so tests do not depend on the real date.
+- Dates are stored as `LocalDate` and `LocalDateTime`, and written to JSON as ISO text.
+- Jackson's tree model (`ObjectNode`) builds the JSON, so the report layout is explicit.
+- Files are read and written with try-with-resources.
+- Logs contain file names and counts only, never full paths or personal data.
+
+![Week 6 test results](docs/test-results-week6.png)
