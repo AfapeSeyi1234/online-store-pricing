@@ -1,0 +1,35 @@
+Rejected records report
+Processed at: 2026-11-16T08:50:05
+Rejected 8 of 29 records.
+
+Line 23
+  Reason: orderDate '2026-13-45' is not a valid date (use yyyy-MM-dd).
+  Record: O1022,C1,P1,2,50.00,2026-13-45,2026-10-22T09:00:00,PAID
+
+Line 24
+  Reason: quantity must be a whole number from 1 to 100.
+  Record: O1023,C2,P2,0,2.50,2026-10-23,2026-10-23T09:00:00,PAID
+
+Line 25
+  Reason: customerId is required.
+  Record: O1024,,P3,1,120.00,2026-10-24,2026-10-24T09:00:00,PAID
+
+Line 26
+  Reason: duplicate orderId O1001 (first seen on line 2).
+  Record: O1001,C3,P4,1,35.00,2026-10-25,2026-10-25T09:00:00,PAID
+
+Line 27
+  Reason: unitPrice must be greater than 0 and at most 100000.
+  Record: O1026,C4,P5,2,-8.99,2026-10-26,2026-10-26T09:00:00,SHIPPED
+
+Line 28
+  Reason: status 'RETURNED' is not valid (use NEW, PAID, SHIPPED, DELIVERED or CANCELLED).
+  Record: O1027,C5,P6,1,75.00,2026-10-27,2026-10-27T09:00:00,RETURNED
+
+Line 29
+  Reason: orderDate 2099-01-01 is in the future.
+  Record: O1028,C6,P1,1,50.00,2099-01-01,2099-01-01T09:00:00,PAID
+
+Line 30
+  Reason: expected 8 values but found 4.
+  Record: O1029,C7,P2,1

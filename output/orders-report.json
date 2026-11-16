@@ -1,0 +1,261 @@
+{
+  "processedAt" : "2026-11-16T08:50:05",
+  "summary" : {
+    "recordsRead" : 29,
+    "acceptedCount" : 21,
+    "rejectedCount" : 8,
+    "totalAmount" : 2141.29,
+    "averageOrderValue" : 101.97,
+    "totalsByStatus" : {
+      "NEW" : 123.94,
+      "PAID" : 830.0,
+      "SHIPPED" : 472.5,
+      "DELIVERED" : 619.9,
+      "CANCELLED" : 94.95
+    }
+  },
+  "processedRecords" : [ {
+    "orderId" : "O1001",
+    "customerId" : "C1",
+    "productId" : "P1",
+    "quantity" : 2,
+    "unitPrice" : 50.0,
+    "orderDate" : "2026-10-01",
+    "createdAt" : "2026-10-01T09:15:00",
+    "status" : "DELIVERED",
+    "lineTotal" : 100.0
+  }, {
+    "orderId" : "O1002",
+    "customerId" : "C2",
+    "productId" : "P2",
+    "quantity" : 10,
+    "unitPrice" : 2.5,
+    "orderDate" : "2026-10-02",
+    "createdAt" : "2026-10-02T10:30:00",
+    "status" : "DELIVERED",
+    "lineTotal" : 25.0
+  }, {
+    "orderId" : "O1003",
+    "customerId" : "C3",
+    "productId" : "P3",
+    "quantity" : 1,
+    "unitPrice" : 120.0,
+    "orderDate" : "2026-10-03",
+    "createdAt" : "2026-10-03T14:05:00",
+    "status" : "SHIPPED",
+    "lineTotal" : 120.0
+  }, {
+    "orderId" : "O1004",
+    "customerId" : "C1",
+    "productId" : "P4",
+    "quantity" : 3,
+    "unitPrice" : 35.0,
+    "orderDate" : "2026-10-04",
+    "createdAt" : "2026-10-04T08:45:00",
+    "status" : "PAID",
+    "lineTotal" : 105.0
+  }, {
+    "orderId" : "O1005",
+    "customerId" : "C4",
+    "productId" : "P5",
+    "quantity" : 5,
+    "unitPrice" : 8.99,
+    "orderDate" : "2026-10-05",
+    "createdAt" : "2026-10-05T16:20:00",
+    "status" : "CANCELLED",
+    "lineTotal" : 44.95
+  }, {
+    "orderId" : "O1006",
+    "customerId" : "C2",
+    "productId" : "P6",
+    "quantity" : 1,
+    "unitPrice" : 75.0,
+    "orderDate" : "2026-10-06",
+    "createdAt" : "2026-10-06T11:00:00",
+    "status" : "DELIVERED",
+    "lineTotal" : 75.0
+  }, {
+    "orderId" : "O1007",
+    "customerId" : "C5",
+    "productId" : "P1",
+    "quantity" : 4,
+    "unitPrice" : 50.0,
+    "orderDate" : "2026-10-07",
+    "createdAt" : "2026-10-07T13:10:00",
+    "status" : "PAID",
+    "lineTotal" : 200.0
+  }, {
+    "orderId" : "O1008",
+    "customerId" : "C3",
+    "productId" : "P2",
+    "quantity" : 20,
+    "unitPrice" : 2.5,
+    "orderDate" : "2026-10-08",
+    "createdAt" : "2026-10-08T09:00:00",
+    "status" : "DELIVERED",
+    "lineTotal" : 50.0
+  }, {
+    "orderId" : "O1009",
+    "customerId" : "C6",
+    "productId" : "P3",
+    "quantity" : 2,
+    "unitPrice" : 120.0,
+    "orderDate" : "2026-10-09",
+    "createdAt" : "2026-10-09T15:30:00",
+    "status" : "SHIPPED",
+    "lineTotal" : 240.0
+  }, {
+    "orderId" : "O1010",
+    "customerId" : "C1",
+    "productId" : "P5",
+    "quantity" : 6,
+    "unitPrice" : 8.99,
+    "orderDate" : "2026-10-10",
+    "createdAt" : "2026-10-10T12:00:00",
+    "status" : "NEW",
+    "lineTotal" : 53.94
+  }, {
+    "orderId" : "O1011",
+    "customerId" : "C7",
+    "productId" : "P6",
+    "quantity" : 2,
+    "unitPrice" : 75.0,
+    "orderDate" : "2026-10-11",
+    "createdAt" : "2026-10-11T10:10:00",
+    "status" : "PAID",
+    "lineTotal" : 150.0
+  }, {
+    "orderId" : "O1012",
+    "customerId" : "C2",
+    "productId" : "P4",
+    "quantity" : 1,
+    "unitPrice" : 35.0,
+    "orderDate" : "2026-10-12",
+    "createdAt" : "2026-10-12T17:45:00",
+    "status" : "DELIVERED",
+    "lineTotal" : 35.0
+  }, {
+    "orderId" : "O1013",
+    "customerId" : "C8",
+    "productId" : "P1",
+    "quantity" : 1,
+    "unitPrice" : 50.0,
+    "orderDate" : "2026-10-13",
+    "createdAt" : "2026-10-13T08:30:00",
+    "status" : "CANCELLED",
+    "lineTotal" : 50.0
+  }, {
+    "orderId" : "O1014",
+    "customerId" : "C5",
+    "productId" : "P2",
+    "quantity" : 15,
+    "unitPrice" : 2.5,
+    "orderDate" : "2026-10-14",
+    "createdAt" : "2026-10-14T14:20:00",
+    "status" : "SHIPPED",
+    "lineTotal" : 37.5
+  }, {
+    "orderId" : "O1015",
+    "customerId" : "C3",
+    "productId" : "P6",
+    "quantity" : 3,
+    "unitPrice" : 75.0,
+    "orderDate" : "2026-10-15",
+    "createdAt" : "2026-10-15T09:55:00",
+    "status" : "PAID",
+    "lineTotal" : 225.0
+  }, {
+    "orderId" : "O1016",
+    "customerId" : "C9",
+    "productId" : "P3",
+    "quantity" : 1,
+    "unitPrice" : 120.0,
+    "orderDate" : "2026-10-16",
+    "createdAt" : "2026-10-16T11:40:00",
+    "status" : "DELIVERED",
+    "lineTotal" : 120.0
+  }, {
+    "orderId" : "O1017",
+    "customerId" : "C1",
+    "productId" : "P4",
+    "quantity" : 2,
+    "unitPrice" : 35.0,
+    "orderDate" : "2026-10-17",
+    "createdAt" : "2026-10-17T16:05:00",
+    "status" : "NEW",
+    "lineTotal" : 70.0
+  }, {
+    "orderId" : "O1018",
+    "customerId" : "C10",
+    "productId" : "P5",
+    "quantity" : 10,
+    "unitPrice" : 8.99,
+    "orderDate" : "2026-10-18",
+    "createdAt" : "2026-10-18T13:25:00",
+    "status" : "DELIVERED",
+    "lineTotal" : 89.9
+  }, {
+    "orderId" : "O1019",
+    "customerId" : "C4",
+    "productId" : "P1",
+    "quantity" : 3,
+    "unitPrice" : 50.0,
+    "orderDate" : "2026-10-19",
+    "createdAt" : "2026-10-19T10:50:00",
+    "status" : "PAID",
+    "lineTotal" : 150.0
+  }, {
+    "orderId" : "O1020",
+    "customerId" : "C2",
+    "productId" : "P2",
+    "quantity" : 50,
+    "unitPrice" : 2.5,
+    "orderDate" : "2026-10-20",
+    "createdAt" : "2026-10-20T09:35:00",
+    "status" : "DELIVERED",
+    "lineTotal" : 125.0
+  }, {
+    "orderId" : "O1021",
+    "customerId" : "C6",
+    "productId" : "P6",
+    "quantity" : 1,
+    "unitPrice" : 75.0,
+    "orderDate" : "2026-10-21",
+    "createdAt" : "2026-10-21T15:15:00",
+    "status" : "SHIPPED",
+    "lineTotal" : 75.0
+  } ],
+  "rejectedRecords" : [ {
+    "lineNumber" : 23,
+    "rawLine" : "O1022,C1,P1,2,50.00,2026-13-45,2026-10-22T09:00:00,PAID",
+    "reasons" : [ "orderDate '2026-13-45' is not a valid date (use yyyy-MM-dd)." ]
+  }, {
+    "lineNumber" : 24,
+    "rawLine" : "O1023,C2,P2,0,2.50,2026-10-23,2026-10-23T09:00:00,PAID",
+    "reasons" : [ "quantity must be a whole number from 1 to 100." ]
+  }, {
+    "lineNumber" : 25,
+    "rawLine" : "O1024,,P3,1,120.00,2026-10-24,2026-10-24T09:00:00,PAID",
+    "reasons" : [ "customerId is required." ]
+  }, {
+    "lineNumber" : 26,
+    "rawLine" : "O1001,C3,P4,1,35.00,2026-10-25,2026-10-25T09:00:00,PAID",
+    "reasons" : [ "duplicate orderId O1001 (first seen on line 2)." ]
+  }, {
+    "lineNumber" : 27,
+    "rawLine" : "O1026,C4,P5,2,-8.99,2026-10-26,2026-10-26T09:00:00,SHIPPED",
+    "reasons" : [ "unitPrice must be greater than 0 and at most 100000." ]
+  }, {
+    "lineNumber" : 28,
+    "rawLine" : "O1027,C5,P6,1,75.00,2026-10-27,2026-10-27T09:00:00,RETURNED",
+    "reasons" : [ "status 'RETURNED' is not valid (use NEW, PAID, SHIPPED, DELIVERED or CANCELLED)." ]
+  }, {
+    "lineNumber" : 29,
+    "rawLine" : "O1028,C6,P1,1,50.00,2099-01-01,2099-01-01T09:00:00,PAID",
+    "reasons" : [ "orderDate 2099-01-01 is in the future." ]
+  }, {
+    "lineNumber" : 30,
+    "rawLine" : "O1029,C7,P2,1",
+    "reasons" : [ "expected 8 values but found 4." ]
+  } ]
+}
