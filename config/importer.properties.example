@@ -1,0 +1,7 @@
+# Copy this file to importer.properties (same folder) and change the values.
+# Use forward slashes in paths, even on Windows.
+# An environment variable with the same purpose overrides the value here:
+#   ORDER_IMPORT_INPUT       = the CSV file to read
+#   ORDER_IMPORT_OUTPUT_DIR  = the folder for the reports
+input.file=data/sample-orders.csv
+output.dir=output
